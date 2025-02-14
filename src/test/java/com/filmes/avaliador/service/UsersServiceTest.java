@@ -4,11 +4,10 @@ import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.model.Users;
 import com.filmes.avaliador.repository.UsersRepository;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
@@ -17,8 +16,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ExtendWith(MockitoExtension.class)
 class UsersServiceTest {
 
     @InjectMocks
@@ -31,6 +28,7 @@ class UsersServiceTest {
 
     @BeforeEach
     void criarNovoUSer(){
+        MockitoAnnotations.openMocks(this);
         user = new Users(
                 UUID.randomUUID(),
                 "Matheus Munari",
