@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.Year;
 
 @Entity
 @Builder
@@ -24,7 +25,7 @@ public class Filme {
 
     private String diretor;
 
-    private LocalDate anoLancamento;
+    private Year anoLancamento;
 
     private String genero;
 
