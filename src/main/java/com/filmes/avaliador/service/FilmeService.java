@@ -20,18 +20,18 @@ public class FilmeService {
         this.repository = repository;
     }
 
-    public void cadastrarFilme(Filme filme){
+    public Filme cadastrarFilme(Filme filme){
 
         Optional<Filme> filmeBanco = repository.findByTituloAndDiretorAndAnoLancamento(filme.getTitulo(), filme.getDiretor(), filme.getAnoLancamento());
 
         if(filmeBanco.isPresent()){
-            throw new ConflitoException("Filme já cadastrado");
+            throw new ConflitoException("Filme já cadastrado", "Titulo", "Duplicado");
         }
 
         filme.setDataCriada(LocalDate.now());
         filme.setDataAlterada(LocalDate.now());
 
-        repository.save(filme);
+        return repository.save(filme);
 
     }
 

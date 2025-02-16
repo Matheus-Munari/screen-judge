@@ -10,3 +10,9 @@ spring:
 #    password: postgres
     driver-class-name: org.h2.Driver
 #    driver-class-name: org.postgresql.Driver
+  h2:
+    console:
+      enabled: true   # Habilita o console web do H2
+      path: /h2-console  # Caminho para acessar o console
+#      settings:
+#        web-allow-others: true  # Permite acesso remoto (caso necessário)
