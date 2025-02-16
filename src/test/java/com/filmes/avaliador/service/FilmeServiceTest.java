@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -215,13 +217,13 @@ class FilmeServiceTest {
         @DisplayName("Buscar todos os filmes")
         void dadoQueNaoPossuoUmFilmeCadastrado_QuandoTentoBuscar_EntaoReceboErroTest(){
 
-            Mockito.when(repository.findAll()).thenReturn(filmes);
-            List<Filme> filmesBuscados = service.buscarFilmes();
+            Mockito.when(repository.findAll(Mockito.any(Example.class))).thenReturn(filmes);
+            List<Filme> filmesBuscados = service.buscarFilmes(null, null, null, null);
 
             assertEquals(filmesBuscados.size(), 1);
 
             Mockito.verify(repository,
-                    Mockito.times(1)).findAll();
+                    Mockito.times(1)).findAll(Mockito.any(Example.class));
         }
 
 

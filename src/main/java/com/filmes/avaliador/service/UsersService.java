@@ -36,7 +36,7 @@ public class UsersService {
         Optional<Users> usuarioPossivel = repository.findByEmail(usuario.getEmail());
 
         if(usuarioPossivel.isPresent()){
-            throw new ConflitoException("Usuário já cadastrado", "Usuário", "Duplicado");
+            throw new ConflitoException("Usuário já cadastrado");
         }
 
         repository.save(usuario);
@@ -65,7 +65,7 @@ public class UsersService {
         }
 
         if(!usuarioADeletar.get().getAtivo()){
-            throw new ConflitoException("Usuário já deletado", "Usuário", "Deletado");
+            throw new ConflitoException("Usuário já deletado");
         }
 
         usuarioADeletar.get().setAtivo(false);
