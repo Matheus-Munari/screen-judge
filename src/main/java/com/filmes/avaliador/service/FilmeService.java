@@ -7,7 +7,9 @@ import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.repository.FilmeRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import static com.filmes.avaliador.repository.specs.FilmeSpecs.*;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -83,6 +85,29 @@ public class FilmeService {
 
         Example<Filme> filmeExample = Example.of(filme, matcher);
         return repository.findAll(filmeExample);
+    }
+
+    public List<Filme> buscarFilmesSpecs(String titulo,
+                                         String diretor,
+                                         Year anoLancamento,
+                                         String genero){
+        Specification<Filme> specs = Specification.where((root, query, cb) -> cb.conjunction() );
+
+        if(titulo != null){
+            specs = specs.and(tituloLike(titulo));
+        }
+        if(diretor != null){
+            specs = specs.and(diretorLike(diretor));
+        }
+        if(anoLancamento != null){
+            specs = specs.and(anoLancamentoEqual(anoLancamento));
+        }
+        if(genero != null){
+            specs = specs.and(generoEqual(genero));
+        }
+
+        return repository.findAll(specs);
+
     }
 
     public Filme buscarPorId(Integer id){
