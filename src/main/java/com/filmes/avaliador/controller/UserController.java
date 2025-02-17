@@ -4,11 +4,14 @@ import com.filmes.avaliador.dto.request.UserRequestCadastroDTO;
 import static com.filmes.avaliador.mapper.UserMapper.*;
 
 import com.filmes.avaliador.dto.response.user.UserResponseDTO;
+import com.filmes.avaliador.model.Users;
 import com.filmes.avaliador.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,9 +28,15 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Void> cadastrar(@RequestBody @Valid UserRequestCadastroDTO dto){
 
-        service.cadastrarUsuario(toEntity(dto));
+        Users usuario =  service.cadastrarUsuario(toEntity(dto));
 
-        return ResponseEntity.noContent().build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(usuario.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("{id}")

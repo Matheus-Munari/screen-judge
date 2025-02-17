@@ -12,6 +12,6 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
     @Query("select COUNT(a) > 0 from Avaliacao as a join a.usuario join a.filme where a.filme = :filme and a.usuario = :usuario")
     boolean existsByFilmeAndUsers(
             @Param("filme") Filme filme,
-            @Param("usuario") Users user);
+            @Param("usuario") Users usuario);
 
 }

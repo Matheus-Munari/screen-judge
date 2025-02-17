@@ -41,7 +41,7 @@ public class UsersService {
         return repository.findAll(usersExample);
     }
 
-    public void cadastrarUsuario(Users usuario){
+    public Users cadastrarUsuario(Users usuario){
 
         Optional<Users> usuarioPossivel = repository.findByEmail(usuario.getEmail());
 
@@ -53,7 +53,7 @@ public class UsersService {
         usuario.setDataAtualizada(LocalDate.now());
         usuario.setDataCriada(LocalDate.now());
 
-        repository.save(usuario);
+        return repository.save(usuario);
     }
 
     public void atualizarUsuario(Users user, UUID id){
