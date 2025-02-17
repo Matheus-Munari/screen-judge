@@ -1,6 +1,7 @@
 package com.filmes.avaliador.mapper;
 
 import com.filmes.avaliador.dto.request.FilmeDTO;
+import com.filmes.avaliador.dto.response.filme.FilmeResponseDTO;
 import com.filmes.avaliador.model.Filme;
 
 public class FilmeMapper {
@@ -16,4 +17,15 @@ public class FilmeMapper {
                 .build();
     }
 
+    public static FilmeResponseDTO toFilmeResponseDTO(Filme entity){
+        return FilmeResponseDTO.builder()
+                .id(entity.getId())
+                .titulo(entity.getTitulo())
+                .anoLancamento(entity.getAnoLancamento())
+                .diretor(entity.getDiretor())
+                .genero(entity.getGenero())
+                .urlImagem(entity.getUrlImagem())
+                .build();
+
+    }
 }

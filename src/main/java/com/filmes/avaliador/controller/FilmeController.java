@@ -1,6 +1,8 @@
 package com.filmes.avaliador.controller;
 
 import com.filmes.avaliador.dto.request.FilmeDTO;
+import com.filmes.avaliador.dto.response.filme.FilmeResponseDTO;
+import com.filmes.avaliador.mapper.FilmeMapper;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.service.FilmeService;
 import jakarta.validation.Valid;
@@ -39,7 +41,7 @@ public class FilmeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Filme>> buscarTodos(
+    public ResponseEntity<List<FilmeResponseDTO>> buscarTodos(
             @RequestParam(required = false) String titulo,
             @RequestParam(required = false) String diretor,
             @RequestParam(required = false) Year anoLancamento,
@@ -53,7 +55,9 @@ public class FilmeController {
         if(filmes.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(filmes);
+
+        List<FilmeResponseDTO> filmesDto = filmes.stream().map(FilmeMapper::toFilmeResponseDTO).toList();
+        return ResponseEntity.ok(filmesDto);
     }
 
 }
