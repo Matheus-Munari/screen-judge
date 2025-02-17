@@ -1,6 +1,6 @@
 package com.filmes.avaliador.mapper;
 
-import com.filmes.avaliador.dto.FilmeDTO;
+import com.filmes.avaliador.dto.request.FilmeDTO;
 import com.filmes.avaliador.model.Filme;
 
 public class FilmeMapper {

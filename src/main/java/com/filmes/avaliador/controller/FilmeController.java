@@ -1,6 +1,6 @@
 package com.filmes.avaliador.controller;
 
-import com.filmes.avaliador.dto.FilmeDTO;
+import com.filmes.avaliador.dto.request.FilmeDTO;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.service.FilmeService;
 import jakarta.validation.Valid;

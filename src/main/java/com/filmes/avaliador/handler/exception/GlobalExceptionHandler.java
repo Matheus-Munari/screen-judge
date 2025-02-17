@@ -1,7 +1,7 @@
 package com.filmes.avaliador.handler.exception;
 
-import com.filmes.avaliador.dto.response.ErroCampo;
-import com.filmes.avaliador.dto.response.ErroResponseDTO;
+import com.filmes.avaliador.dto.response.exception.ErroCampo;
+import com.filmes.avaliador.dto.response.exception.ErroResponseDTO;
 import com.filmes.avaliador.exception.ConflitoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;

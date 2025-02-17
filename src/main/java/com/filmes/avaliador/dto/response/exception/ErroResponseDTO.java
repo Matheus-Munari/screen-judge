@@ -1,4 +1,4 @@
-package com.filmes.avaliador.dto.response;
+package com.filmes.avaliador.dto.response.exception;
 
 import java.util.List;
 
