@@ -6,6 +6,7 @@ import com.filmes.avaliador.mapper.FilmeMapper;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.service.FilmeService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -41,23 +42,28 @@ public class FilmeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FilmeResponseDTO>> buscarTodos(
+    public ResponseEntity<Page<FilmeResponseDTO>> buscarTodos(
             @RequestParam(required = false) String titulo,
             @RequestParam(required = false) String diretor,
             @RequestParam(required = false) Year anoLancamento,
-            @RequestParam(required = false) String genero){
-        List<Filme> filmes = service.buscarFilmes(
+            @RequestParam(required = false) String genero,
+            @RequestParam(defaultValue = "0") Integer pagina,
+            @RequestParam(defaultValue = "10") Integer tamanhoPagina){
+        var paginaResultado = service.buscarFilmes(
                 titulo,
                 diretor,
                 anoLancamento,
-                genero);
+                genero,
+                pagina,
+                tamanhoPagina);
 
-        if(filmes.isEmpty()){
+        Page<FilmeResponseDTO> resultado = paginaResultado.map(FilmeMapper::toFilmeResponseDTO);
+
+        if(resultado.getContent().isEmpty()){
             return ResponseEntity.noContent().build();
         }
 
-        List<FilmeResponseDTO> filmesDto = filmes.stream().map(FilmeMapper::toFilmeResponseDTO).toList();
-        return ResponseEntity.ok(filmesDto);
+        return ResponseEntity.ok(resultado);
     }
 
 }

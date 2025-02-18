@@ -5,8 +5,7 @@ import com.filmes.avaliador.exception.NoContentException;
 import com.filmes.avaliador.exception.NotFoundException;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.repository.FilmeRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import static com.filmes.avaliador.repository.specs.FilmeSpecs.*;
@@ -66,10 +65,12 @@ public class FilmeService {
 
     }
 
-    public List<Filme> buscarFilmes(String titulo,
+    public Page<Filme> buscarFilmes(String titulo,
                                     String diretor,
                                     Year anoLancamento,
-                                    String genero){
+                                    String genero,
+                                    Integer pagina,
+                                    Integer tamanhoPagina){
 
         Filme filme = new Filme();
         filme.setGenero(genero);
@@ -83,8 +84,10 @@ public class FilmeService {
                 .withIgnoreNullValues()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
+        Pageable page = PageRequest.of(pagina, tamanhoPagina);
+
         Example<Filme> filmeExample = Example.of(filme, matcher);
-        return repository.findAll(filmeExample);
+        return repository.findAll(filmeExample, page);
     }
 
     public List<Filme> buscarFilmesSpecs(String titulo,
