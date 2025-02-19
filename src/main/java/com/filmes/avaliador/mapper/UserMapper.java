@@ -2,17 +2,20 @@ package com.filmes.avaliador.mapper;
 
 import com.filmes.avaliador.dto.request.UserRequestCadastroDTO;
 import com.filmes.avaliador.dto.response.user.UserResponseDTO;
-import com.filmes.avaliador.model.Users;
+import com.filmes.avaliador.model.user.UserRole;
+import com.filmes.avaliador.model.user.Users;
 
 public class UserMapper {
 
     public static Users toEntity(UserRequestCadastroDTO dto){
+
 
         return Users.builder()
                 .nome(dto.nome())
                 .senha(dto.senha())
                 .email(dto.email())
                 .dataNascimento(dto.dataNascimento())
+                .role(UserRole.valueOf(dto.role()))
                 .build();
     }
 

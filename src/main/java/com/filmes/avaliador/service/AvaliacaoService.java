@@ -3,7 +3,7 @@ package com.filmes.avaliador.service;
 import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.model.Avaliacao;
 import com.filmes.avaliador.model.Filme;
-import com.filmes.avaliador.model.Users;
+import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.repository.AvaliacaoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

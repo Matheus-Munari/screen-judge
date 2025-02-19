@@ -1,5 +1,6 @@
 package com.filmes.avaliador.model;
 
+import com.filmes.avaliador.model.user.Users;
 import jakarta.persistence.*;
 import lombok.*;
 

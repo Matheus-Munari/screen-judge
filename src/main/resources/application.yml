@@ -16,3 +16,7 @@ spring:
       path: /h2-console  # Caminho para acessar o console
 #      settings:
 #        web-allow-others: true  # Permite acesso remoto (caso necessário)
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:minha-chave-secreta}

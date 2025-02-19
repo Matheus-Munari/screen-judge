@@ -1,17 +1,16 @@
 package com.filmes.avaliador.service;
 
 import com.filmes.avaliador.exception.ConflitoException;
-import com.filmes.avaliador.exception.NoContentException;
 import com.filmes.avaliador.exception.NotFoundException;
-import com.filmes.avaliador.model.Filme;
-import com.filmes.avaliador.model.Users;
+import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.repository.UsersRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -43,11 +42,14 @@ public class UsersService {
 
     public Users cadastrarUsuario(Users usuario){
 
-        Optional<Users> usuarioPossivel = repository.findByEmail(usuario.getEmail());
+        UserDetails usuarioPossivel = repository.findByEmail(usuario.getEmail());
 
-        if(usuarioPossivel.isPresent()){
+        if(usuarioPossivel!=null){
             throw new ConflitoException("Usuário já cadastrado");
         }
+
+        String senhaEncriptada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+        usuario.setSenha(senhaEncriptada);
 
         usuario.setAtivo(true);
         usuario.setDataAtualizada(LocalDate.now());
@@ -97,5 +99,13 @@ public class UsersService {
 
         return usuarioBuscado.get();
 
+    }
+
+    public UserDetails carregarPorEmail(String email){
+        UserDetails usuario =  repository.findByEmail(email);
+        if(usuario == null){
+            throw new NotFoundException("Usuário não encontrado");
+        }
+        return usuario;
     }
 }

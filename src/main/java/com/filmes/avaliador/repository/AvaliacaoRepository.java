@@ -2,7 +2,7 @@ package com.filmes.avaliador.repository;
 
 import com.filmes.avaliador.model.Avaliacao;
 import com.filmes.avaliador.model.Filme;
-import com.filmes.avaliador.model.Users;
+import com.filmes.avaliador.model.user.Users;
 import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

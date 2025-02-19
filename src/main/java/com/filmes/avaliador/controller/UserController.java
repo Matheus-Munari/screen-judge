@@ -4,7 +4,7 @@ import com.filmes.avaliador.dto.request.UserRequestCadastroDTO;
 import static com.filmes.avaliador.mapper.UserMapper.*;
 
 import com.filmes.avaliador.dto.response.user.UserResponseDTO;
-import com.filmes.avaliador.model.Users;
+import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

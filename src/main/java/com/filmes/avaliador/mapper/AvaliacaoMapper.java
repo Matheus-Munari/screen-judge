@@ -4,7 +4,7 @@ import com.filmes.avaliador.dto.request.AvaliacaoDTO;
 import com.filmes.avaliador.dto.response.avaliacao.AvaliacaoUsuarioFilmeResponseDTO;
 import com.filmes.avaliador.model.Avaliacao;
 import com.filmes.avaliador.model.Filme;
-import com.filmes.avaliador.model.Users;
+import com.filmes.avaliador.model.user.Users;
 
 import java.util.UUID;
 
