@@ -4,12 +4,12 @@ import com.filmes.avaliador.dto.request.AuthenticationDTO;
 import com.filmes.avaliador.dto.request.UserRequestCadastroDTO;
 import com.filmes.avaliador.dto.response.user.LoginResponseDTO;
 import com.filmes.avaliador.model.user.Users;
+import com.filmes.avaliador.security.CustomAuthenticationProvider;
 import com.filmes.avaliador.security.TokenService;
 import com.filmes.avaliador.service.UsersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +26,7 @@ import static com.filmes.avaliador.mapper.UserMapper.toEntity;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
+    private final CustomAuthenticationProvider authenticationProvider;
 
     private final UsersService usersService;
 
@@ -35,7 +35,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO dto){
         var usernamePassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.senha());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var auth = this.authenticationProvider.authenticate(usernamePassword);
 
         var token = tokenService.gerarToken((Users) auth.getPrincipal());
 
@@ -48,7 +48,7 @@ public class AuthenticationController {
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}")
+                .replacePath("/auth/login/{id}")
                 .buildAndExpand(usuario.getId())
                 .toUri();
 

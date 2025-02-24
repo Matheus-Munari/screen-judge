@@ -8,6 +8,7 @@ import com.filmes.avaliador.mapper.AvaliacaoMapper;
 import com.filmes.avaliador.model.Avaliacao;
 import com.filmes.avaliador.service.AvaliacaoService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,6 +26,7 @@ public class AvaliacaoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Void> cadastrar(@RequestBody AvaliacaoDTO avaliacaoDTO){
 
 
@@ -40,6 +42,7 @@ public class AvaliacaoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<AvaliacaoUsuarioFilmeResponseDTO>> todasAvaliacoes(){
 
         List<Avaliacao> avaliacoes = service.buscarTodas();
@@ -55,6 +58,7 @@ public class AvaliacaoController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
 
         service.deletar(id);
@@ -63,6 +67,7 @@ public class AvaliacaoController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Void> atualizar(
             @PathVariable Integer id,
             @RequestBody AvaliacaoDTO avaliacao){
