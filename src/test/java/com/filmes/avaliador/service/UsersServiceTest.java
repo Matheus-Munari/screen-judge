@@ -2,6 +2,7 @@ package com.filmes.avaliador.service;
 
 import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.exception.NotFoundException;
+import com.filmes.avaliador.model.user.UserRole;
 import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.repository.UsersRepository;
 import org.junit.jupiter.api.*;
@@ -35,6 +36,7 @@ class UsersServiceTest {
                 "matheus.denani@test.com",
                 "Senha@123",
                 LocalDate.of(2004, 04, 21),
+                UserRole.ADMIN,
                 LocalDate.of(2025, 02, 13),
                 LocalDate.of(2025, 02, 13),
                 true

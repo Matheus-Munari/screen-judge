@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -218,9 +219,9 @@ class FilmeServiceTest {
         void dadoQueNaoPossuoUmFilmeCadastrado_QuandoTentoBuscar_EntaoReceboErroTest(){
 
             Mockito.when(repository.findAll(Mockito.any(Example.class))).thenReturn(filmes);
-            List<Filme> filmesBuscados = service.buscarFilmes(null, null, null, null);
+            Page<Filme> filmesBuscados = service.buscarFilmes(null, null, null, null, 0, 10);
 
-            assertEquals(filmesBuscados.size(), 1);
+            assertEquals(filmesBuscados.getTotalElements(), 1);
 
             Mockito.verify(repository,
                     Mockito.times(1)).findAll(Mockito.any(Example.class));
