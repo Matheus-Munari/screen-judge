@@ -23,6 +23,11 @@ spring:
     console:
       enabled: true   # Habilita o console web do H2
       path: /h2-console  # Caminho para acessar o console
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 #      settings:
 #        web-allow-others: true  # Permite acesso remoto (caso necessário)
 api:

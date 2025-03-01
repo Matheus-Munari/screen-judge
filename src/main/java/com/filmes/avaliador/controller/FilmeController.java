@@ -6,8 +6,10 @@ import com.filmes.avaliador.mapper.FilmeMapper;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.service.FilmeService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,13 +21,13 @@ import static com.filmes.avaliador.mapper.FilmeMapper.*;
 
 @RequestMapping("/filmes")
 @RestController
+@RequiredArgsConstructor
 public class FilmeController {
 
-    private FilmeService service;
+    private final FilmeService service;
 
-    public FilmeController(FilmeService service) {
-        this.service = service;
-    }
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
 
     @PostMapping
     public ResponseEntity<Void> salvar(@RequestBody @Valid FilmeDTO dto){
@@ -38,6 +40,7 @@ public class FilmeController {
                 .buildAndExpand(filmeSalvo.getId())
                 .toUri();
 
+        kafkaTemplate.send("topico-teste", filmeSalvo.getTitulo());
         return ResponseEntity.created(location).build();
     }
 
