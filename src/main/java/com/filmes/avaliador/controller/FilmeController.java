@@ -26,7 +26,7 @@ public class FilmeController {
 
     private final FilmeService service;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
 
     @PostMapping
@@ -40,7 +40,7 @@ public class FilmeController {
                 .buildAndExpand(filmeSalvo.getId())
                 .toUri();
 
-        kafkaTemplate.send("topico-teste", filmeSalvo.getTitulo());
+        kafkaTemplate.send("teste-topico", toFilmeResponseDTO(filmeSalvo));
         return ResponseEntity.created(location).build();
     }
 
