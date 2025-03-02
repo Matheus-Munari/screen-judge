@@ -2,6 +2,7 @@ package com.filmes.avaliador.controller;
 
 import com.filmes.avaliador.dto.request.AuthenticationDTO;
 import com.filmes.avaliador.dto.request.UserRequestCadastroDTO;
+import com.filmes.avaliador.dto.response.user.CodigoGeradoResponseDTO;
 import com.filmes.avaliador.dto.response.user.LoginResponseDTO;
 import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.security.CustomAuthenticationProvider;
@@ -43,16 +44,26 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> registrar(@RequestBody @Valid UserRequestCadastroDTO dto){
-        Users usuario =  usersService.cadastrarUsuario(toEntity(dto));
+    public ResponseEntity<CodigoGeradoResponseDTO> registrar(@RequestBody @Valid UserRequestCadastroDTO dto){
+//        Users usuario =  usersService.cadastrarUsuario(toEntity(dto));
+//
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .replacePath("/auth/login/{id}")
+//                .buildAndExpand(usuario.getId())
+//                .toUri();
+//
+//        return ResponseEntity.created(location).build();
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .replacePath("/auth/login/{id}")
-                .buildAndExpand(usuario.getId())
-                .toUri();
+        Integer indiceUsuario = usersService.gerarCodigoAutenticacao(toEntity(dto));
 
-        return ResponseEntity.created(location).build();
+
+        CodigoGeradoResponseDTO codigoGeradoResponseDTO = CodigoGeradoResponseDTO.builder()
+                .mensagem("Código enviado para o email informado")
+                .indice(indiceUsuario)
+                .build();
+
+        return ResponseEntity.accepted().body(codigoGeradoResponseDTO);
     }
 
 }

@@ -3,6 +3,7 @@ package com.filmes.avaliador.controller;
 import com.filmes.avaliador.dto.request.UserRequestCadastroDTO;
 import static com.filmes.avaliador.mapper.UserMapper.*;
 
+import com.filmes.avaliador.dto.response.user.CodigoGeradoResponseDTO;
 import com.filmes.avaliador.dto.response.user.UserResponseDTO;
 import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.service.UsersService;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -26,18 +29,28 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> cadastrar(@RequestBody @Valid UserRequestCadastroDTO dto){
+    public ResponseEntity<CodigoGeradoResponseDTO> cadastrar(@RequestBody @Valid UserRequestCadastroDTO dto){
 
-        Users usuario =  service.cadastrarUsuario(toEntity(dto));
+//        Users usuario =  service.cadastrarUsuario(toEntity(dto));
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(usuario.getId())
-                .toUri();
+        Integer indiceUsuario = service.gerarCodigoAutenticacao(toEntity(dto));
 
-        return ResponseEntity.created(location).build();
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{id}")
+//                .buildAndExpand(usuario.getId())
+//                .toUri();
+
+//        return ResponseEntity.created(location).build();
+
+        CodigoGeradoResponseDTO codigoGeradoResponseDTO = CodigoGeradoResponseDTO.builder()
+                .mensagem("Código enviado para o email informado")
+                .indice(indiceUsuario)
+                .build();
+
+        return ResponseEntity.accepted().body(codigoGeradoResponseDTO);
     }
+
 
     @PutMapping("{id}")
     public ResponseEntity<Void> atualizar(

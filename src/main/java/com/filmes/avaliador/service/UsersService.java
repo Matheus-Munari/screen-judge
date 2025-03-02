@@ -1,28 +1,42 @@
 package com.filmes.avaliador.service;
 
+import com.filmes.avaliador.dto.response.email.EmailMessageDTO;
 import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.exception.NotFoundException;
+import com.filmes.avaliador.model.Autenticacao2Fatores;
 import com.filmes.avaliador.model.user.Users;
+import com.filmes.avaliador.repository.Autenticacao2FatoresRepository;
 import com.filmes.avaliador.repository.UsersRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class UsersService {
 
     private final UsersRepository repository;
+    private final Autenticacao2FatoresRepository doisfatoresRepository;
+    private List<Users> usuariosParaCriar;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public UsersService(UsersRepository repository) {
+    public UsersService(UsersRepository repository, Autenticacao2FatoresRepository doisfatoresRepository, KafkaTemplate<String, Object> kafkaTemplate) {
         this.repository = repository;
+        this.doisfatoresRepository = doisfatoresRepository;
+        this.kafkaTemplate = kafkaTemplate;
+        this.usuariosParaCriar = new ArrayList<>();
     }
 
     public List<Users> listarUsuarios(String nome){
@@ -107,5 +121,25 @@ public class UsersService {
             throw new NotFoundException("Usuário não encontrado");
         }
         return usuario;
+    }
+
+    public Integer gerarCodigoAutenticacao(Users usuario){
+        Integer indiceUsuario = usuariosParaCriar.size();
+        usuariosParaCriar.add(usuario);
+        Integer numeroAleatorio = ThreadLocalRandom.current().nextInt(100_000, 1_000_000);
+        String codigo = numeroAleatorio.toString();
+        String codigoEncriptado = new BCryptPasswordEncoder().encode(codigo);
+
+        Autenticacao2Fatores autenticacao = new Autenticacao2Fatores();
+        autenticacao.setCodigo(codigoEncriptado);
+        doisfatoresRepository.save(autenticacao);
+        EmailMessageDTO email = EmailMessageDTO.builder()
+                .destinatario(usuario.getEmail())
+                .tipo("VALIDACAO_EMAIL")
+                .assunto("Código de verificação de conta")
+                .corpo("Seu código de verificação de email é: " + codigo)
+                .build();
+        kafkaTemplate.send("email-sender", email);
+        return indiceUsuario;
     }
 }

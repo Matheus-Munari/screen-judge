@@ -1,5 +1,6 @@
 package com.filmes.avaliador.config;
 
+import com.filmes.avaliador.dto.response.email.EmailMessageDTO;
 import com.filmes.avaliador.dto.response.filme.FilmeResponseDTO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class KafkaConsumerFactory {
 
     @Bean
-    public ConsumerFactory<String, FilmeResponseDTO> consumerFactory(){
+    public ConsumerFactory<String, EmailMessageDTO> consumerFactory(){
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "meu-grupo");
@@ -32,7 +33,7 @@ public class KafkaConsumerFactory {
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         // Define a classe do objeto esperado
-        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.filmes.avaliador.dto.response.filme.FilmeResponseDTO");
+        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.filmes.avaliador.dto.response.email.EmailMessageDTO");
 
         // Garante que o Consumer confia no pacote onde a classe está localizada
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
@@ -43,8 +44,8 @@ public class KafkaConsumerFactory {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, FilmeResponseDTO> kafkaListenerContainerFactory(){
-        ConcurrentKafkaListenerContainerFactory<String, FilmeResponseDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, EmailMessageDTO> kafkaListenerContainerFactory(){
+        ConcurrentKafkaListenerContainerFactory<String, EmailMessageDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
