@@ -2,6 +2,7 @@ package com.filmes.avaliador.handler.exception;
 
 import com.filmes.avaliador.dto.response.exception.ErroCampo;
 import com.filmes.avaliador.dto.response.exception.ErroResponseDTO;
+import com.filmes.avaliador.exception.BadRequestException;
 import com.filmes.avaliador.exception.ConflitoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -40,6 +41,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "Erro de validação",
                 listaErros
+        );
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    @ExceptionHandler(BadRequestException.class)
+    public ErroResponseDTO handleMethodBadRequestException(
+            BadRequestException e
+    ){
+        return new ErroResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage(),
+                List.of()
         );
     }
 

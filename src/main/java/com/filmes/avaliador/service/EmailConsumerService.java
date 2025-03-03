@@ -40,9 +40,6 @@ public class EmailConsumerService {
     @KafkaListener(topics = "email-sender", groupId = "meu-grupo")
     public void enviarEmail(EmailMessageDTO mensagem) throws IOException, MessagingException {
 
-        System.out.println("Destinatário: " + mensagem.getDestinatario());
-        System.out.println("Corpo: " + mensagem.getCorpo());
-
         String templateHtml = lerArquivo("email-template.html");
         String conteudoHtml = templateHtml.replace("${USER}", mensagem.getNome());
         conteudoHtml = conteudoHtml.replace("${CODE}", mensagem.getCodigo());
@@ -52,6 +49,7 @@ public class EmailConsumerService {
         message.setFrom(new InternetAddress(remetente));
         message.setRecipients(MimeMessage.RecipientType.TO, mensagem.getDestinatario());
         message.setContent(conteudoHtml, "text/html; charset=utf-8");
+        message.setSubject(mensagem.getAssunto());
 
         javaMailSender.send(message);
     }

@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface Autenticacao2FatoresRepository extends JpaRepository<Autenticacao2Fatores,Integer> {
-
+    Optional<Autenticacao2Fatores> findByCodigo(String codigo);
 }

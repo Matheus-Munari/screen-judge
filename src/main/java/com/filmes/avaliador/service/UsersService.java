@@ -1,6 +1,7 @@
 package com.filmes.avaliador.service;
 
 import com.filmes.avaliador.dto.response.email.EmailMessageDTO;
+import com.filmes.avaliador.exception.BadRequestException;
 import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.exception.NotFoundException;
 import com.filmes.avaliador.model.Autenticacao2Fatores;
@@ -30,13 +31,15 @@ public class UsersService {
     private final UsersRepository repository;
     private final Autenticacao2FatoresRepository doisfatoresRepository;
     private List<Users> usuariosParaCriar;
+    private final PasswordEncoder encoder;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public UsersService(UsersRepository repository, Autenticacao2FatoresRepository doisfatoresRepository, KafkaTemplate<String, Object> kafkaTemplate) {
+    public UsersService(UsersRepository repository, Autenticacao2FatoresRepository doisfatoresRepository, KafkaTemplate<String, Object> kafkaTemplate, PasswordEncoder encoder) {
         this.repository = repository;
         this.doisfatoresRepository = doisfatoresRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.usuariosParaCriar = new ArrayList<>();
+        this.encoder = encoder;
     }
 
     public List<Users> listarUsuarios(String nome){
@@ -54,22 +57,27 @@ public class UsersService {
         return repository.findAll(usersExample);
     }
 
-    public Users cadastrarUsuario(Users usuario){
+    public Users cadastrarUsuario(int index, String codigo){
 
-        UserDetails usuarioPossivel = repository.findByEmail(usuario.getEmail());
+        Optional<Autenticacao2Fatores> autenticacao = doisfatoresRepository.findByCodigo(codigo);
 
-        if(usuarioPossivel!=null){
-            throw new ConflitoException("Usuário já cadastrado");
+        if(autenticacao.isEmpty()){
+            throw new BadRequestException("Código de autenticação incorreto");
         }
 
-        String senhaEncriptada = new BCryptPasswordEncoder().encode(usuario.getSenha());
-        usuario.setSenha(senhaEncriptada);
+        if(index >= usuariosParaCriar.size() || index < 0){
+            throw new BadRequestException("Indice não encontrado");
+        }
 
-        usuario.setAtivo(true);
-        usuario.setDataAtualizada(LocalDate.now());
-        usuario.setDataCriada(LocalDate.now());
+        Users usuarioASalvar = usuariosParaCriar.get(index);
 
-        return repository.save(usuario);
+        usuarioASalvar.setAtivo(true);
+
+        usuariosParaCriar.remove(index);
+
+        doisfatoresRepository.delete(autenticacao.get());
+
+        return repository.save(usuarioASalvar);
     }
 
     public void atualizarUsuario(Users user, UUID id){
@@ -124,15 +132,30 @@ public class UsersService {
     }
 
     public Integer gerarCodigoAutenticacao(Users usuario){
+
+        UserDetails usuarioPossivel = repository.findByEmail(usuario.getEmail());
+
+        if(usuarioPossivel!=null){
+            throw new ConflitoException("Usuário já cadastrado");
+        }
+
         Integer indiceUsuario = usuariosParaCriar.size();
+        usuario.setDataAtualizada(LocalDate.now());
+        usuario.setDataCriada(LocalDate.now());
+
+        String senhaEncriptada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+        usuario.setSenha(senhaEncriptada);
+
         usuariosParaCriar.add(usuario);
+
         Integer numeroAleatorio = ThreadLocalRandom.current().nextInt(100_000, 1_000_000);
         String codigo = numeroAleatorio.toString();
-        String codigoEncriptado = new BCryptPasswordEncoder().encode(codigo);
+//        String codigoEncriptado = new BCryptPasswordEncoder().encode(codigo);
 
         Autenticacao2Fatores autenticacao = new Autenticacao2Fatores();
-        autenticacao.setCodigo(codigoEncriptado);
+        autenticacao.setCodigo(codigo);
         doisfatoresRepository.save(autenticacao);
+
         EmailMessageDTO email = EmailMessageDTO.builder()
                 .destinatario(usuario.getEmail())
                 .tipo("VALIDACAO_EMAIL")
@@ -141,7 +164,9 @@ public class UsersService {
                 .codigo(codigo)
                 .nome(usuario.getNome())
                 .build();
+
         kafkaTemplate.send("email-sender", email);
+
         return indiceUsuario;
     }
 }
