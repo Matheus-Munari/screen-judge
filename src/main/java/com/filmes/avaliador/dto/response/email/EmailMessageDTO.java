@@ -13,4 +13,6 @@ public class EmailMessageDTO {
     private String destinatario;
     private String assunto;
     private String corpo;
+    private String codigo;
+    private String nome;
 }

@@ -1,4 +1,14 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: matheusmunari0@gmail.com
+    password: ${EMAIL_S_ENV}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+
   application:
     name: avaliador-filmes
   datasource:

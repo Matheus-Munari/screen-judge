@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de E-mail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .logo {
+            max-width: 120px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .code {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            padding: 10px;
+            background: #f1f1f1;
+            display: inline-block;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="https://yourdomain.com/logo.png" alt="Logo">
+        <h2>Verifique seu e-mail</h2>
+        <p>Olá, ${USER}! use o código abaixo para confirmar seu endereço de e-mail:</p>
+        <div class="code">${CODE}</div>
+        <p>Se você não solicitou este código, ignore este e-mail.</p>
+        <p class="footer">© 2025 SeuApp. Todos os direitos reservados.</p>
+    </div>
+</body>
+</html>

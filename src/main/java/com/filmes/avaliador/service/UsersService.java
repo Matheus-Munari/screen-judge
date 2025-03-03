@@ -138,6 +138,8 @@ public class UsersService {
                 .tipo("VALIDACAO_EMAIL")
                 .assunto("Código de verificação de conta")
                 .corpo("Seu código de verificação de email é: " + codigo)
+                .codigo(codigo)
+                .nome(usuario.getNome())
                 .build();
         kafkaTemplate.send("email-sender", email);
         return indiceUsuario;
