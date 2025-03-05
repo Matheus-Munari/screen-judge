@@ -8,11 +8,11 @@ import java.time.Year;
 public class FilmeSpecs {
 
     public static Specification<Filme> tituloLike(String titulo){
-        return ((root, query, cb) -> cb.like(root.get("titulo"), titulo));
+        return ((root, query, cb) -> cb.like(root.get("titulo"), "%" + titulo + "%"));
     }
 
     public static Specification<Filme> diretorLike(String diretor){
-        return ((root, query, cb) -> cb.like(root.get("diretor"), diretor));
+        return (root, query, cb) -> cb.like(cb.lower(root.get("diretor")), "%" + diretor.toLowerCase() + "%");
     }
 
     public static Specification<Filme> generoEqual(String genero){

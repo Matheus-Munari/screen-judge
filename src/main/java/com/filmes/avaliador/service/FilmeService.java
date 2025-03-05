@@ -90,10 +90,12 @@ public class FilmeService {
         return repository.findAll(filmeExample, page);
     }
 
-    public List<Filme> buscarFilmesSpecs(String titulo,
+    public Page<Filme> buscarFilmesSpecs(String titulo,
                                          String diretor,
                                          Year anoLancamento,
-                                         String genero){
+                                         String genero,
+                                         Integer pagina,
+                                         Integer tamanhoPagina){
         Specification<Filme> specs = Specification.where((root, query, cb) -> cb.conjunction() );
 
         if(titulo != null){
@@ -109,7 +111,9 @@ public class FilmeService {
             specs = specs.and(generoEqual(genero));
         }
 
-        return repository.findAll(specs);
+        Pageable page = PageRequest.of(pagina, tamanhoPagina);
+
+        return repository.findAll(specs, page);
 
     }
 

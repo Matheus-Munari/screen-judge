@@ -52,7 +52,7 @@ public class FilmeController {
             @RequestParam(required = false) String genero,
             @RequestParam(defaultValue = "0") Integer pagina,
             @RequestParam(defaultValue = "10") Integer tamanhoPagina){
-        var paginaResultado = service.buscarFilmes(
+        var paginaResultado = service.buscarFilmesSpecs(
                 titulo,
                 diretor,
                 anoLancamento,
