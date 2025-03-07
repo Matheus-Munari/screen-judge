@@ -34,6 +34,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers(HttpMethod.POST, "/usuarios").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/tmdb/filmes").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/tmdb/filmes/crew/{id}").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/tmdb/filmes/trailer/{id}").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll();
                     authorize.anyRequest().authenticated();

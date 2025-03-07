@@ -1,10 +1,16 @@
 package com.filmes.avaliador.service;
 
+import com.filmes.avaliador.clients.TmdbClient;
+import com.filmes.avaliador.config.TmdbClientConfig;
+import com.filmes.avaliador.dto.response.tmdb.TmdbResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.crew.CrewResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.crew.TmdbCrewResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.trailler.TraillerResponseDTO;
 import com.filmes.avaliador.exception.ConflitoException;
-import com.filmes.avaliador.exception.NoContentException;
 import com.filmes.avaliador.exception.NotFoundException;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.repository.FilmeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -16,13 +22,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FilmeService {
 
-    private FilmeRepository repository;
+    private final FilmeRepository repository;
 
-    public FilmeService(FilmeRepository repository) {
-        this.repository = repository;
-    }
+    private final TmdbClient tmdbClient;
+
+    private final TmdbClientConfig tmdbClientConfig;
 
     public Filme cadastrarFilme(Filme filme){
 
@@ -126,6 +133,42 @@ public class FilmeService {
         }
 
         return filme.get();
+    }
+
+    public TmdbResponseDTO buscarFilmesTmdb(String filme, Boolean incluirAdulto, Integer pagina){
+        return tmdbClient.buscarFilmes(filme, "pt-BR", pagina, incluirAdulto, tmdbClientConfig.getKey());
+    }
+
+    public String buscarDiretor(Long idFilme){
+        List<CrewResponseDTO> crew = tmdbClient.buscarCreditos(idFilme, "pt-BR", tmdbClientConfig.getKey()).crew();
+
+        for(CrewResponseDTO daVez : crew){
+            if(daVez.job().equals("Director")){
+                return daVez.name();
+            }
+        }
+        return null;
+    }
+
+    public TraillerResponseDTO buscarTrailer(Long idFilme){
+
+        List<TraillerResponseDTO> trailer = tmdbClient.buscarTraillers(idFilme, "pt-BR", tmdbClientConfig.getKey()).results();
+
+        for(TraillerResponseDTO video : trailer){
+            if(video.type().equals("Trailer")){
+                return video;
+            }
+        }
+
+        trailer = tmdbClient.buscarTraillers(idFilme, "en-US", tmdbClientConfig.getKey()).results();
+
+        for(TraillerResponseDTO video : trailer){
+            if(video.type().equals("Trailer")){
+                return video;
+            }
+        }
+
+        return null;
     }
 
 
