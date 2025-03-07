@@ -1,6 +1,6 @@
 package com.filmes.avaliador.controller;
 
-import com.filmes.avaliador.dto.request.FilmeDTO;
+import com.filmes.avaliador.dto.request.FilmeRequestDTO;
 import com.filmes.avaliador.dto.response.filme.FilmeResponseDTO;
 import com.filmes.avaliador.mapper.FilmeMapper;
 import com.filmes.avaliador.model.Filme;
@@ -15,7 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.Year;
-import java.util.List;
 
 import static com.filmes.avaliador.mapper.FilmeMapper.*;
 
@@ -30,7 +29,7 @@ public class FilmeController {
 
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody @Valid FilmeDTO dto){
+    public ResponseEntity<Void> salvar(@RequestBody @Valid FilmeRequestDTO dto){
 
         Filme filmeSalvo = service.cadastrarFilme(toEntity(dto));
 
@@ -40,7 +39,6 @@ public class FilmeController {
                 .buildAndExpand(filmeSalvo.getId())
                 .toUri();
 
-        kafkaTemplate.send("teste-topico", toFilmeResponseDTO(filmeSalvo));
         return ResponseEntity.created(location).build();
     }
 

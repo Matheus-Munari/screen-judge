@@ -2,12 +2,15 @@ package com.filmes.avaliador.service;
 
 import com.filmes.avaliador.clients.TmdbClient;
 import com.filmes.avaliador.config.TmdbClientConfig;
+import com.filmes.avaliador.dto.response.filme.FilmePorIdResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.TmdbResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.crew.CrewResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.crew.TmdbCrewResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.filme.FilmePorIdTmdbResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.trailler.TraillerResponseDTO;
 import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.exception.NotFoundException;
+import com.filmes.avaliador.mapper.FilmeMapper;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.repository.FilmeRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +36,7 @@ public class FilmeService {
 
     public Filme cadastrarFilme(Filme filme){
 
-        Optional<Filme> filmeBanco = repository.findByTituloAndDiretorAndAnoLancamento(filme.getTitulo(), filme.getDiretor(), filme.getAnoLancamento());
+        Optional<Filme> filmeBanco = repository.findByTituloAndDiretorAndDataLancamento(filme.getTitulo(), filme.getDiretor(), filme.getDataLancamento());
 
         if(filmeBanco.isPresent()){
             throw new ConflitoException("Filme já cadastrado");
@@ -46,7 +49,7 @@ public class FilmeService {
 
     }
 
-    public void atualizarFilme(Filme filme, Integer id){
+    public void atualizarFilme(Filme filme, Long id){
 
         Optional<Filme> filmeAAtualizar = repository.findById(id);
 
@@ -60,7 +63,7 @@ public class FilmeService {
         repository.save(filme);
     }
 
-    public void deletarFilme(Integer id){
+    public void deletarFilme(Long id){
 
         Optional<Filme> filmeADeletar = repository.findById(id);
 
@@ -74,16 +77,16 @@ public class FilmeService {
 
     public Page<Filme> buscarFilmes(String titulo,
                                     String diretor,
-                                    Year anoLancamento,
+                                    LocalDate anoLancamento,
                                     String genero,
                                     Integer pagina,
                                     Integer tamanhoPagina){
 
         Filme filme = new Filme();
-        filme.setGenero(genero);
+        filme.setGeneroPrincipal(genero);
         filme.setDiretor(diretor);
         filme.setTitulo(titulo);
-        filme.setAnoLancamento(anoLancamento);
+        filme.setDataLancamento(anoLancamento);
 
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -124,7 +127,7 @@ public class FilmeService {
 
     }
 
-    public Filme buscarPorId(Integer id){
+    public Filme buscarPorId(Long id){
 
         Optional<Filme> filme = repository.findById(id);
 
@@ -169,6 +172,28 @@ public class FilmeService {
         }
 
         return null;
+    }
+
+    public FilmePorIdResponseDTO buscarTmdbPorId(Long idFilme){
+
+        FilmePorIdTmdbResponseDTO filmePorIdTmdbResponseDTO = tmdbClient.buscarFilmePorId(idFilme, "pt-BR","credits" , tmdbClientConfig.getKey());
+
+        TmdbCrewResponseDTO crew = filmePorIdTmdbResponseDTO.credits();
+
+        String diretor = "";
+
+        for(CrewResponseDTO daVez : crew.crew()){
+            if(daVez.job().equals("Director")){
+                diretor = daVez.name();
+                break;
+            }
+        }
+
+        TraillerResponseDTO trailer = buscarTrailer(idFilme);
+
+        FilmePorIdResponseDTO filmePorIdResponseDTO = FilmeMapper.toFilmePorIdResponseDTO(filmePorIdTmdbResponseDTO, trailer.key(), trailer.site(), diretor);
+
+        return filmePorIdResponseDTO;
     }
 
 

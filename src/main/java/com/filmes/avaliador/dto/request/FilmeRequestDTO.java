@@ -5,10 +5,25 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+
+import java.time.LocalDate;
 import java.time.Year;
 
 @Builder
-public record FilmeDTO(
+public record FilmeRequestDTO(
+        @NotBlank(message = "Campo obrigatório")
+        @Size(max = 250, min = 2, message = "Quantidade de caracteres fora do limite (mínimo 2, máximo 250)")
+        String tituloOriginal,
+        @NotBlank
+        String idImdb,
+        @NotBlank(message = "Campo obrigatório")
+        @Size(max = 1_000, min = 2, message = "Quantidade de caracteres fora do limite (mínimo 2, máximo 1000)")
+        String overview,
+        String tagLine,
+        @NotBlank(message = "Campo obrigatório")
+        String trailerKey,
+        @NotBlank(message = "Campo obrigatório")
+        String plataformaTrailer,
         @NotBlank(message = "Campo obrigatório")
         @Size(max = 250, min = 2, message = "Quantidade de caracteres fora do limite (mínimo 2, máximo 250)")
         String titulo,
@@ -17,11 +32,11 @@ public record FilmeDTO(
         String diretor,
         @NotNull(message = "Campo obrigatório")
         @PastOrPresent(message = "O filme deve ter sido lançado para ser cadastrado")
-        Year anoLancamento,
+        LocalDate dataLancamento,
         @Size(max = 100, min = 2, message = "Quantidade de caracteres fora do limite (mínimo 2, máximo 100)")
         @NotBlank(message = "Campo obrigatório")
-        String genero,
+        String generoPrincipal,
         @NotBlank(message = "Campo obrigatório")
-        String urlImagem
+        String posterPath
 ) {
 }

@@ -1,6 +1,6 @@
 package com.filmes.avaliador.dto.response.tmdb.filme;
 
-public record FilmePorIdRequestDTO(
-
+public record GenerosTmdbResponseDTO(
+        String name
 ) {
 }

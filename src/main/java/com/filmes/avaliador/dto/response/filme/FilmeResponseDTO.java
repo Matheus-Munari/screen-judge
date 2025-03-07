@@ -7,11 +7,11 @@ import java.time.Year;
 
 @Builder
 public record FilmeResponseDTO(
-        Integer id,
+        Long id,
         String titulo,
         String diretor,
-        Year anoLancamento,
+        LocalDate datalancamento,
         String genero,
-        String urlImagem
+        String posterPath
 ) {
 }

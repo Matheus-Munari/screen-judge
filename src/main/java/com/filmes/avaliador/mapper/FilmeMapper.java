@@ -1,19 +1,27 @@
 package com.filmes.avaliador.mapper;
 
-import com.filmes.avaliador.dto.request.FilmeDTO;
+import com.filmes.avaliador.dto.request.FilmeRequestDTO;
+import com.filmes.avaliador.dto.response.filme.FilmePorIdResponseDTO;
 import com.filmes.avaliador.dto.response.filme.FilmeResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.filme.FilmePorIdTmdbResponseDTO;
 import com.filmes.avaliador.model.Filme;
 
 public class FilmeMapper {
 
 
-    public static Filme toEntity(FilmeDTO dto){
+    public static Filme toEntity(FilmeRequestDTO dto){
         return Filme.builder()
                 .titulo(dto.titulo())
+                .tituloOriginal(dto.tituloOriginal())
                 .diretor(dto.diretor())
-                .anoLancamento(dto.anoLancamento())
-                .genero(dto.genero())
-                .urlImagem(dto.urlImagem())
+                .dataLancamento(dto.dataLancamento())
+                .generoPrincipal(dto.generoPrincipal())
+                .posterPath(dto.posterPath())
+                .idImdb(dto.idImdb())
+                .overview(dto.overview())
+                .tagLine(dto.tagLine())
+                .trailerKey(dto.trailerKey())
+                .plataformaTrailer(dto.plataformaTrailer())
                 .build();
     }
 
@@ -21,11 +29,28 @@ public class FilmeMapper {
         return FilmeResponseDTO.builder()
                 .id(entity.getId())
                 .titulo(entity.getTitulo())
-                .anoLancamento(entity.getAnoLancamento())
+                .datalancamento(entity.getDataLancamento())
                 .diretor(entity.getDiretor())
-                .genero(entity.getGenero())
-                .urlImagem(entity.getUrlImagem())
+                .genero(entity.getGeneroPrincipal())
+                .posterPath(entity.getPosterPath())
                 .build();
 
+    }
+
+    public static FilmePorIdResponseDTO toFilmePorIdResponseDTO(FilmePorIdTmdbResponseDTO tmdb, String videoKey, String plataforma, String diretor){
+        return FilmePorIdResponseDTO.builder()
+                .id(tmdb.id())
+                .dataLancamento(tmdb.dataLancamento())
+                .generoPrincipal(tmdb.generos().get(0).name())
+                .title(tmdb.title())
+                .idImdb(tmdb.idImdb())
+                .posterPath(tmdb.posterPath())
+                .overview(tmdb.overview())
+                .tagLine(tmdb.tagLine())
+                .tituloOriginal(tmdb.tituloOriginal())
+                .diretor(diretor)
+                .trailerKey(videoKey)
+                .plataformaTrailer(plataforma)
+                .build();
     }
 }

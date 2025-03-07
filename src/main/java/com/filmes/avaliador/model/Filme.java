@@ -1,9 +1,6 @@
 package com.filmes.avaliador.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,17 +16,30 @@ public class Filme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String titulo;
 
+    private String tituloOriginal;
+
     private String diretor;
 
-    private Year anoLancamento;
+    private LocalDate dataLancamento;
 
-    private String genero;
+    private String generoPrincipal;
 
-    private String urlImagem;
+    private String posterPath;
+
+    private String idImdb;
+
+    @Column(columnDefinition = "TEXT")
+    private String overview;
+
+    private String tagLine;
+
+    private String trailerKey;
+
+    private String plataformaTrailer;
 
     private LocalDate dataCriada;
 

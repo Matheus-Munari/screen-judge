@@ -20,7 +20,7 @@ public class FilmeSpecs {
     }
 
     public static Specification<Filme> anoLancamentoEqual(Year anoLancamento){
-        return (root, query, cb) -> cb.equal(root.get("anoLancamento"), anoLancamento);
+        return (root, query, cb) -> cb.equal(cb.function("YEAR", Integer.class, root.get("dataLancamento")), anoLancamento.getValue());
     }
 
 }

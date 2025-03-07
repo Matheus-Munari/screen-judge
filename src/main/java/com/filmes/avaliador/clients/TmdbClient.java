@@ -2,6 +2,7 @@ package com.filmes.avaliador.clients;
 
 import com.filmes.avaliador.dto.response.tmdb.TmdbResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.crew.TmdbCrewResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.filme.FilmePorIdTmdbResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.trailler.TmdbTraillerResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,4 +29,11 @@ public interface TmdbClient {
     TmdbTraillerResponseDTO buscarTraillers(@PathVariable("id") Long id,
                                             @RequestParam("language") String language,
                                             @RequestParam("api_key") String apiKey);
+
+
+    @GetMapping("movie/{id}")
+    FilmePorIdTmdbResponseDTO buscarFilmePorId(@PathVariable("id") Long id,
+                                               @RequestParam("language") String language,
+                                               @RequestParam("append_to_response") String apendice,
+                                               @RequestParam("api_key") String apiKey);
 }

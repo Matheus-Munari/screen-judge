@@ -2,8 +2,9 @@ package com.filmes.avaliador.controller;
 
 import com.filmes.avaliador.clients.TmdbClient;
 import com.filmes.avaliador.config.TmdbClientConfig;
+import com.filmes.avaliador.dto.response.filme.FilmePorIdResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.TmdbResponseDTO;
-import com.filmes.avaliador.dto.response.tmdb.crew.TmdbCrewResponseDTO;
+import com.filmes.avaliador.dto.response.tmdb.filme.FilmePorIdTmdbResponseDTO;
 import com.filmes.avaliador.dto.response.tmdb.trailler.TraillerResponseDTO;
 import com.filmes.avaliador.service.FilmeService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,15 @@ public class TmdbController {
     public ResponseEntity<TraillerResponseDTO> buscarTrailler(@PathVariable("id") Long id){
 
         TraillerResponseDTO dto = filmeService.buscarTrailer(id);
+
+        return ResponseEntity.ok(dto);
+
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<FilmePorIdResponseDTO> buscarPorId(@PathVariable("id") Long id){
+
+        FilmePorIdResponseDTO dto = filmeService.buscarTmdbPorId(id);
 
         return ResponseEntity.ok(dto);
 

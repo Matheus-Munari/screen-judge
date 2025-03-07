@@ -13,6 +13,6 @@ public record AvaliacaoDTO(
         @NotBlank(message = "Campo obrigatório")
         String idUsuario,
         @NotNull(message = "Campo obrigatório")
-        Integer idFilme
+        Long idFilme
 ) {
 }
