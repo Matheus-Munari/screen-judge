@@ -1,8 +1,10 @@
 package com.filmes.avaliador.controller;
 
 
+import com.filmes.avaliador.dto.request.AdicionarFilmeAListaDTO;
 import com.filmes.avaliador.dto.request.ListaRecomendacoesCadastroDTO;
 import com.filmes.avaliador.mapper.ListaRecomendacoesMapper;
+import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.model.ListaRecomendacoes;
 import com.filmes.avaliador.service.ListaRecomendacoesService;
 import jakarta.validation.Valid;
@@ -37,7 +39,7 @@ public class ListaRecomendacoesController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<ListaRecomendacoesCadastroDTO>> buscarPorId(
                                                                 @RequestParam(required = false) String nome,
@@ -54,6 +56,23 @@ public class ListaRecomendacoesController {
         }
 
         return ResponseEntity.ok(resultado);
+
+    }
+
+    @PostMapping("add-filme")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Void> adicionarFilme(@RequestBody AdicionarFilmeAListaDTO dto){
+        service.adicionarFilme(dto.listaRecomendacoesId(), dto.filmeId());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Page<Filme>> buscarFilmesDaLista(@PathVariable Long id,
+                                                           @RequestParam(defaultValue = "10") Integer tamanhoPagina,
+                                                           @RequestParam(defaultValue = "0") Integer pagina){
+        Page<Filme> filmes = service.buscarFilmesDaLista(id, tamanhoPagina, pagina);
+        return ResponseEntity.ok(filmes);
 
     }
 

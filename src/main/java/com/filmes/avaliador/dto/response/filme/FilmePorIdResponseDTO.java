@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public record FilmePorIdResponseDTO(
         Long id,
         String tituloOriginal,
-        String idImdb,
+        Long idTmdb,
         String overview,
         String posterPath,
         LocalDate dataLancamento,

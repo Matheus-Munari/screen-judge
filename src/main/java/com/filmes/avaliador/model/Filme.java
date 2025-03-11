@@ -30,7 +30,7 @@ public class Filme {
 
     private String posterPath;
 
-    private String idImdb;
+    private Long idTmdb;
 
     @Column(columnDefinition = "TEXT")
     private String overview;

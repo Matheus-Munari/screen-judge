@@ -14,8 +14,8 @@ public record FilmeRequestDTO(
         @NotBlank(message = "Campo obrigatório")
         @Size(max = 250, min = 2, message = "Quantidade de caracteres fora do limite (mínimo 2, máximo 250)")
         String tituloOriginal,
-        @NotBlank
-        String idImdb,
+        @NotNull(message = "Campo obrigatório")
+        Long idTmdb,
         @NotBlank(message = "Campo obrigatório")
         @Size(max = 1_000, min = 2, message = "Quantidade de caracteres fora do limite (mínimo 2, máximo 1000)")
         String overview,

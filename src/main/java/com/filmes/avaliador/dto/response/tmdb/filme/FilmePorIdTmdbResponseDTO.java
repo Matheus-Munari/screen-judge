@@ -10,8 +10,6 @@ public record FilmePorIdTmdbResponseDTO(
         Long id,
         @JsonProperty("original_title")
         String tituloOriginal,
-        @JsonProperty("imdb_id")
-        String idImdb,
         String overview,
         @JsonProperty("poster_path")
         String posterPath,
