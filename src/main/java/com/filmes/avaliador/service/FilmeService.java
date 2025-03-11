@@ -104,6 +104,7 @@ public class FilmeService {
                                          String diretor,
                                          Year anoLancamento,
                                          String genero,
+                                         Long idTmdb,
                                          Integer pagina,
                                          Integer tamanhoPagina){
         Specification<Filme> specs = Specification.where((root, query, cb) -> cb.conjunction() );
@@ -119,6 +120,10 @@ public class FilmeService {
         }
         if(genero != null){
             specs = specs.and(generoEqual(genero));
+        }
+        if(idTmdb != null){
+            specs = specs.and(idTmdbEqual(idTmdb));
+
         }
 
         Pageable page = PageRequest.of(pagina, tamanhoPagina);

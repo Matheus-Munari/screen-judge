@@ -48,6 +48,7 @@ public class FilmeController {
             @RequestParam(required = false) String diretor,
             @RequestParam(required = false) Year anoLancamento,
             @RequestParam(required = false) String genero,
+            @RequestParam(required = false) Long idTmdb,
             @RequestParam(defaultValue = "0") Integer pagina,
             @RequestParam(defaultValue = "10") Integer tamanhoPagina){
         var paginaResultado = service.buscarFilmesSpecs(
@@ -55,6 +56,7 @@ public class FilmeController {
                 diretor,
                 anoLancamento,
                 genero,
+                idTmdb,
                 pagina,
                 tamanhoPagina);
 

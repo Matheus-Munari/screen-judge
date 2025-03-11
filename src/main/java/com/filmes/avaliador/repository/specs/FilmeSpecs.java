@@ -23,4 +23,8 @@ public class FilmeSpecs {
         return (root, query, cb) -> cb.equal(cb.function("YEAR", Integer.class, root.get("dataLancamento")), anoLancamento.getValue());
     }
 
+    public static Specification<Filme> idTmdbEqual(Long idTmdb){
+        return (root, query, cb) -> cb.equal(root.get("idTmdb"), idTmdb);
+    }
+
 }
