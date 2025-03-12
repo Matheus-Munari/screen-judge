@@ -3,6 +3,8 @@ package com.filmes.avaliador.controller;
 
 import com.filmes.avaliador.dto.request.AdicionarFilmeAListaDTO;
 import com.filmes.avaliador.dto.request.ListaRecomendacoesCadastroDTO;
+import com.filmes.avaliador.dto.response.filme.FilmeResponseDTO;
+import com.filmes.avaliador.mapper.FilmeMapper;
 import com.filmes.avaliador.mapper.ListaRecomendacoesMapper;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.model.ListaRecomendacoes;
@@ -68,11 +70,13 @@ public class ListaRecomendacoesController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Page<Filme>> buscarFilmesDaLista(@PathVariable Long id,
-                                                           @RequestParam(defaultValue = "10") Integer tamanhoPagina,
-                                                           @RequestParam(defaultValue = "0") Integer pagina){
+    public ResponseEntity<Page<FilmeResponseDTO>> buscarFilmesDaLista(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "10") Integer tamanhoPagina,
+                                                                      @RequestParam(defaultValue = "0") Integer pagina){
         Page<Filme> filmes = service.buscarFilmesDaLista(id, tamanhoPagina, pagina);
-        return ResponseEntity.ok(filmes);
+
+        var filmesDto = filmes.map(FilmeMapper::toFilmeResponseDTO);
+        return ResponseEntity.ok(filmesDto);
 
     }
 

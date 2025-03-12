@@ -38,6 +38,7 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.GET, "/tmdb/filmes/crew/{id}").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/tmdb/filmes/trailer/{id}").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/tmdb/filmes/{id}").permitAll();
+                    authorize.requestMatchers(HttpMethod.DELETE, "/avaliacoes/{id}/comentarios/{idComentario}").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll();
                     authorize.anyRequest().authenticated();

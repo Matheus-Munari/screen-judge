@@ -2,7 +2,10 @@ package com.filmes.avaliador.mapper;
 
 import com.filmes.avaliador.dto.request.AvaliacaoDTO;
 import com.filmes.avaliador.dto.response.avaliacao.AvaliacaoUsuarioFilmeResponseDTO;
+import com.filmes.avaliador.dto.response.avaliacao.ComentariosAvaliacaoDTO;
 import com.filmes.avaliador.model.Avaliacao;
+import com.filmes.avaliador.model.Comentario;
+import com.filmes.avaliador.model.ComentarioAvaliacao;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.model.user.Users;
 
@@ -32,6 +35,16 @@ public class AvaliacaoMapper {
                 .comentario(entity.getComentario())
                 .usuario(UserMapper.toResponseDTO(entity.getUsuario()))
                 .filme(FilmeMapper.toFilmeResponseDTO(entity.getFilme()))
+                .build();
+    }
+
+    public static ComentariosAvaliacaoDTO toComentariosAvaliacaoDto(ComentarioAvaliacao entity){
+        Comentario comentario = entity.getComentario();
+        return ComentariosAvaliacaoDTO.builder()
+                .id(comentario.getId())
+                .comentario(comentario.getComentario())
+                .usuario(UserMapper.toResponseDTO(comentario.getUsuario()))
+                .dataComentario(comentario.getDataComentario())
                 .build();
     }
 

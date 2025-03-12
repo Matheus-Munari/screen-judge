@@ -26,21 +26,14 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@RequiredArgsConstructor
 public class UsersService {
 
     private final UsersRepository repository;
     private final Autenticacao2FatoresRepository doisfatoresRepository;
-    private List<Users> usuariosParaCriar;
+    private final List<Users> usuariosParaCriar;
     private final PasswordEncoder encoder;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-
-    public UsersService(UsersRepository repository, Autenticacao2FatoresRepository doisfatoresRepository, KafkaTemplate<String, Object> kafkaTemplate, PasswordEncoder encoder) {
-        this.repository = repository;
-        this.doisfatoresRepository = doisfatoresRepository;
-        this.kafkaTemplate = kafkaTemplate;
-        this.usuariosParaCriar = new ArrayList<>();
-        this.encoder = encoder;
-    }
 
     public List<Users> listarUsuarios(String nome){
 

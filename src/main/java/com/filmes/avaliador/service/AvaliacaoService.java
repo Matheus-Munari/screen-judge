@@ -2,32 +2,34 @@ package com.filmes.avaliador.service;
 
 import com.filmes.avaliador.exception.ConflitoException;
 import com.filmes.avaliador.model.Avaliacao;
+import com.filmes.avaliador.model.Comentario;
+import com.filmes.avaliador.model.ComentarioAvaliacao;
 import com.filmes.avaliador.model.Filme;
 import com.filmes.avaliador.model.user.Users;
 import com.filmes.avaliador.repository.AvaliacaoRepository;
+import com.filmes.avaliador.repository.ComentarioAvaliacaoRepository;
+import com.filmes.avaliador.repository.ComentarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AvaliacaoService {
 
-    private AvaliacaoRepository repository;
+    private final AvaliacaoRepository repository;
 
-    private UsersService userService;
+    private final UsersService userService;
 
-    private FilmeService filmeService;
-
-    public AvaliacaoService(AvaliacaoRepository repository, UsersService userService, FilmeService filmeService) {
-        this.repository = repository;
-        this.userService = userService;
-        this.filmeService = filmeService;
-    }
+    private final FilmeService filmeService;
 
     public Avaliacao cadastrarNovaAvaliacao(Avaliacao avaliacao){
 
@@ -75,5 +77,9 @@ public class AvaliacaoService {
 
         repository.save(avaliacao);
 
+    }
+
+    public Avaliacao buscarPorId(Integer id){
+        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }
