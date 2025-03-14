@@ -80,4 +80,18 @@ public class ListaRecomendacoesController {
 
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Void> deletarLista(@PathVariable Long id){
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{idLista}/filme/{idFilme}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Void> deletarFilmeDaLista(@PathVariable Long idLista, @PathVariable Long idFilme){
+        service.removerFilme(idLista, idFilme);
+        return ResponseEntity.noContent().build();
+    }
+
 }

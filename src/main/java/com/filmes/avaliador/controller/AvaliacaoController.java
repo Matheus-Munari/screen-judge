@@ -132,5 +132,27 @@ public class AvaliacaoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("comentarios/{idComentario}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Void> atualizarComentario(
+            @PathVariable Integer idComentario,
+            @RequestBody ComentarioRequestDTO comentario,
+            Authentication authentication){
+
+        ComentarioAvaliacao comentarioAvaliacao = comentarioAvaliacaoService.atualizarComentario(
+                idComentario,
+                comentario.comentario(),
+                comentario.idUsuario(),
+                authentication);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(comentarioAvaliacao.getComentario().getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
 
 }

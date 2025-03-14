@@ -12,6 +12,7 @@ import com.filmes.avaliador.repository.ComentarioAvaliacaoRepository;
 import com.filmes.avaliador.repository.ComentarioRepository;
 import com.filmes.avaliador.repository.specs.ComentarioSpecs;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.quota.ClientQuotaAlteration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -98,6 +99,32 @@ public class ComentarioAvaliacaoService {
 
         comentarioAvaliacaoRepository.delete(comentario);
         comentarioRepository.delete(comentario.getComentario());
+
+    }
+
+    public ComentarioAvaliacao atualizarComentario(Integer idComentario,String comentario, String idUsuario, Authentication authentication){
+
+        Optional<Comentario> comentarioBuscado = comentarioRepository.findById(idComentario);
+        Optional<ComentarioAvaliacao> comentarioAvaliacaoBuscado = comentarioAvaliacaoRepository.findByComentarioId(idComentario);
+        Users usuario = usersService.usuarioPorId(UUID.fromString(idUsuario));
+
+        if(comentarioBuscado.isEmpty() || comentarioAvaliacaoBuscado.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário não encontrado");
+        }
+
+        if(!authentication.getName().equals(usuario.getEmail())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não tem permissão para atualizar este comentário");
+        }
+
+        Comentario comentarioAtualizado = comentarioBuscado.get();
+        comentarioAtualizado.setComentario(comentario);
+
+        comentarioRepository.save(comentarioAtualizado);
+
+        ComentarioAvaliacao comentarioAvaliacao = comentarioAvaliacaoBuscado.get();
+        comentarioAvaliacao.setComentario(comentarioAtualizado);
+
+        return comentarioAvaliacaoRepository.save(comentarioAvaliacao);
 
     }
 
