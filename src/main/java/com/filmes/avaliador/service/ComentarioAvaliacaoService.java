@@ -1,6 +1,8 @@
 package com.filmes.avaliador.service;
 
+import com.filmes.avaliador.dto.response.email.ComentarioAvaliacaoEmailDTO;
 import com.filmes.avaliador.exception.ConflitoException;
+import com.filmes.avaliador.mapper.AvaliacaoMapper;
 import com.filmes.avaliador.model.Avaliacao;
 import com.filmes.avaliador.model.Comentario;
 import com.filmes.avaliador.model.ComentarioAvaliacao;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +38,7 @@ public class ComentarioAvaliacaoService {
     private final ComentarioRepository comentarioRepository;
     private final UsersService usersService;
     private final AvaliacaoService avaliacaoService;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
 
     public ComentarioAvaliacao cadastrarNovoComentario(Integer idAvaliacao, String comentario, UUID idUsuario){
@@ -58,7 +62,12 @@ public class ComentarioAvaliacaoService {
         comentarioAvaliacao.setAvaliacao(avaliacao);
         comentarioAvaliacao.setComentario(novoComentario);
 
-        return comentarioAvaliacaoRepository.save(comentarioAvaliacao);
+        ComentarioAvaliacao comentarioSalvo = comentarioAvaliacaoRepository.save(comentarioAvaliacao);
+
+        ComentarioAvaliacaoEmailDTO emailDTO = AvaliacaoMapper.toComentarioAvaliacaoEmailDto(comentarioSalvo);
+
+        kafkaTemplate.send("comentario_avaliacao_email", emailDTO);
+        return comentarioSalvo;
     }
 
     public Page<ComentarioAvaliacao> buscarComentariosDeAvaliacao(Integer idAvaliacao, boolean orderByAsc, Integer pagina, Integer tamanhoPagina){

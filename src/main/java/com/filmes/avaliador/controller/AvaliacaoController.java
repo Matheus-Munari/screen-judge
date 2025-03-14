@@ -118,6 +118,8 @@ public class AvaliacaoController {
             return ResponseEntity.noContent().build();
         }
 
+        var emailDto = avaliacao.map(AvaliacaoMapper::toComentarioAvaliacaoEmailDto);
+
         var comentariosDto = avaliacao.map(AvaliacaoMapper::toComentariosAvaliacaoDto);
         return ResponseEntity.ok(comentariosDto);
     }
