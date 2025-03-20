@@ -2,7 +2,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: matheusmunari0@gmail.com
+    username: {EMAIL_ENV}
     password: ${EMAIL_S_ENV}
     properties:
       mail.smtp.auth: true
@@ -12,16 +12,12 @@ spring:
   application:
     name: avaliador-filmes
   datasource:
-#    url: jdbc:postgresql://localhost:5432/library
     url: jdbc:h2:mem:teste
     username: sa
     password: password
-#    username: postgres
-#    password: postgres
     driver-class-name: org.h2.Driver
-#    driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: true
+    show-sql: false
     defer-datasource-initialization: true
     properties:
       hibernate:
@@ -31,8 +27,8 @@ spring:
       ddl-auto: create-drop
   h2:
     console:
-      enabled: true   # Habilita o console web do H2
-      path: /h2-console  # Caminho para acessar o console
+      enabled: true
+      path: /h2-console
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -43,8 +39,6 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
       group-id: meu-grupo
-#      settings:
-#        web-allow-others: true  # Permite acesso remoto (caso necessário)
 api:
   security:
     token:
@@ -56,3 +50,23 @@ feign:
       tmdb:
         url: ${TMDB_BASE_URL}
         key: ${TMDB_API_KEY}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+logging:
+  level:
+    org:
+      com:
+        filmes:
+          avaliador: TRACE
+      springframework:
+        web: DEBUG
+        security: TRACE
+      hibernate:
+        SQL: DEBUG

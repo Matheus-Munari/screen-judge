@@ -12,6 +12,7 @@ import com.filmes.avaliador.repository.ComentarioAvaliacaoRepository;
 import com.filmes.avaliador.repository.ComentarioRepository;
 import com.filmes.avaliador.repository.specs.ComentarioSpecs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.quota.ClientQuotaAlteration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +34,7 @@ import static com.filmes.avaliador.repository.specs.ComentarioSpecs.orderByAsc;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ComentarioAvaliacaoService {
 
     private final ComentarioAvaliacaoRepository comentarioAvaliacaoRepository;
@@ -94,6 +96,7 @@ public class ComentarioAvaliacaoService {
         String userName = authentication.getName();
 
         if(!userName.equals(comentario.getComentario().getUsuario().getEmail()) || !userName.equals(comentario.getAvaliacao().getUsuario().getEmail())){
+            log.info("Usuário {} tem permissão para deletar este comentário", userName);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não tem permissão para deletar este comentário");
         }
 
@@ -113,6 +116,7 @@ public class ComentarioAvaliacaoService {
         }
 
         if(!authentication.getName().equals(usuario.getEmail())){
+            log.info("Usuário {} tem permissão para atualizar este comentário", authentication.getName());
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não tem permissão para atualizar este comentário");
         }
 

@@ -12,7 +12,12 @@ import com.filmes.avaliador.model.Comentario;
 import com.filmes.avaliador.model.ComentarioAvaliacao;
 import com.filmes.avaliador.service.AvaliacaoService;
 import com.filmes.avaliador.service.ComentarioAvaliacaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +32,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/avaliacoes")
 @RequiredArgsConstructor
+@Tag(name = "Avaliação", description = "Endpoint utilizado para avaliar e comentar avaliações de filmes")
+@Slf4j
 public class AvaliacaoController {
 
     private final AvaliacaoService service;
@@ -35,6 +42,15 @@ public class AvaliacaoController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Cadastrar nova avaliação", description = "Cadastra uma nova avaliação de um filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Avaliação cadastrada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "422", description = "Erro na validação"),
+            @ApiResponse(responseCode = "409", description = "Usuário já avaliou este filme"),
+    })
     public ResponseEntity<Void> cadastrar(@RequestBody AvaliacaoDTO avaliacaoDTO){
 
 
@@ -51,6 +67,14 @@ public class AvaliacaoController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Buscar todas as avaliações", description = "Busca todas as avaliações de filmes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Avaliação cadastrada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Nenhuma avaliação encontrada"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+    })
     public ResponseEntity<List<AvaliacaoUsuarioFilmeResponseDTO>> todasAvaliacoes(){
 
         List<Avaliacao> avaliacoes = service.buscarTodas();
@@ -67,6 +91,14 @@ public class AvaliacaoController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Deletar avaliação", description = "Deleta uma avaliação de um filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Avaliação deletada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "404", description = "Avaliação não encontrada"),
+    })
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
 
         service.deletar(id);
@@ -76,6 +108,14 @@ public class AvaliacaoController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Atualizar avaliação", description = "Atualiza uma avaliação de um filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Avaliação atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "404", description = "Avaliação não encontrada"),
+    })
     public ResponseEntity<Void> atualizar(
             @PathVariable Integer id,
             @RequestBody AvaliacaoDTO avaliacao){
@@ -89,6 +129,15 @@ public class AvaliacaoController {
 
     @PostMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Comentar avaliação", description = "Comenta uma avaliação de um filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Comentário cadastrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "422", description = "Erro na validação"),
+            @ApiResponse(responseCode = "404", description = "Avaliação não encontrada"),
+    })
     public ResponseEntity<Void> comentarAvaliacao(
             @PathVariable Integer id,
             @RequestBody ComentarioRequestDTO comentario){
@@ -106,6 +155,15 @@ public class AvaliacaoController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Buscar comentários de uma avaliação", description = "Busca os comentários de uma avaliação de um filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Comentários encontrados"),
+            @ApiResponse(responseCode = "204", description = "Nenhum comentário encontrado"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "404", description = "Avaliação não encontrada"),
+    })
     public ResponseEntity<Page<ComentariosAvaliacaoDTO>> buscarAvaliacaoComComentarios(
             @PathVariable Integer id,
             @RequestParam(required = false, defaultValue = "0") Integer pagina,
@@ -118,15 +176,14 @@ public class AvaliacaoController {
             return ResponseEntity.noContent().build();
         }
 
-        var emailDto = avaliacao.map(AvaliacaoMapper::toComentarioAvaliacaoEmailDto);
-
         var comentariosDto = avaliacao.map(AvaliacaoMapper::toComentariosAvaliacaoDto);
         return ResponseEntity.ok(comentariosDto);
     }
 
     @DeleteMapping("comentarios/{idComentario}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<String> deletarAvaliacao(@PathVariable Integer idComentario, Authentication authentication){
+    @Operation(summary = "Deletar comentário", description = "Deleta um comentário de uma avaliação de um filme")
+    public ResponseEntity<String> deletarComentario(@PathVariable Integer idComentario, Authentication authentication){
 
         comentarioAvaliacaoService.deletarComentario(idComentario, authentication);
         return ResponseEntity.noContent().build();
@@ -134,6 +191,15 @@ public class AvaliacaoController {
 
     @PutMapping("comentarios/{idComentario}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Atualizar comentário", description = "Atualiza um comentário de uma avaliação de um filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Comentário atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição"),
+            @ApiResponse(responseCode = "401", description = "Sem autorização"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "422", description = "Erro na validação"),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+    })
     public ResponseEntity<Void> atualizarComentario(
             @PathVariable Integer idComentario,
             @RequestBody ComentarioRequestDTO comentario,
