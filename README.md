@@ -39,8 +39,6 @@ Como utilizar este projeto localmente
 
 <h3 id="clonar">Clonar projeto</h3>
 
-How to clone your project
-
 ```bash
 git clone https://github.com/Matheus-Munari/avaliador-filmes.git
 ```
@@ -61,7 +59,7 @@ spring:
 
 Para que a aplicação mande emails automaticamente é necessário configurar um email e senha para o serviço de email
 
-PASSO A PASSO
+<a href="https://scribehow.com/shared/How_To_Manage_Passwords_In_Google_Account__R82pSgTXQl6KYA6xNblMOw">Crie sua senha para envio de email</a>
 
 <h4>Configuração da API Key para comunicar com o serviço do TMDB</h4>
 
