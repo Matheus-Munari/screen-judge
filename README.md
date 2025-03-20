@@ -32,7 +32,7 @@
 
 Como utilizar este projeto localmente
 
-<h3>Prerequisites</h3>
+<h3>Pré-Requisitos</h3>
 
 - Java 17
 - Docker (WSL2 consequentemente se estiver em Windows)
